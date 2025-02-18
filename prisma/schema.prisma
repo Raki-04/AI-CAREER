@@ -13,7 +13,8 @@ model User {
   email       String  @unique 
   name        String?
   imageUrl    String?
-  industry    String?   
+  industry    String?  
+  ds 
   createdAt   DateTime @default(now()) // Timestamp for user creation
   updatedAt   DateTime @updatedAt      // Auto-update timestamp
 }
