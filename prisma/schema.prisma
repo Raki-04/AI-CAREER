@@ -8,13 +8,100 @@ datasource db {
 }
 
 model User {
-  id          String  @id @default(uuid())
+  id          String  @id @default(cuid())
   clerkUserId String  @unique  // Clerk user ID
   email       String  @unique 
   name        String?
   imageUrl    String?
-  industry    String?  
-  ds 
-  createdAt   DateTime @default(now()) // Timestamp for user creation
-  updatedAt   DateTime @updatedAt      // Auto-update timestamp
+  industryId  String?  
+  industryInsight IndustryInsight? @relation(fields: [industryId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Profile fields 
+  bio        String?
+  experience Int?
+  skills     String[]
+
+  assesments  Assesment[]
+  resume      Resume?
+  coverLetter CoverLetter[]
+}
+
+model Assesment {
+  id          String  @id @default(cuid())
+  UserId      String  
+  User        User    @relation(fields: [UserId], references: [id])
+  quizScore   Float 
+  questions   Json[]
+  category    String 
+  improvementTip String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([UserId])
+}
+
+model Resume {
+  id        String  @id @default(cuid())
+  UserId    String  @unique
+  User      User    @relation(fields: [UserId], references: [id])
+  content   String  @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CoverLetter {
+  id             String  @id @default(cuid())
+  UserId         String  
+  User           User    @relation(fields: [UserId], references: [id])
+  content        String
+  JobDescription String?
+  companyName    String 
+  JobTitle       String 
+  improvementTip String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([UserId])
+}
+
+model IndustryInsight {
+  id          String @id @default(cuid())
+  industry    String @unique 
+
+  // Users in the industry 
+  users       User[]
+
+  // Salary data 
+  salaryRanges Json[]
+
+  // Industry trends 
+  growthRate   Float 
+  demandLevel  DemandLevel
+  topSkills    String[]
+
+  // Market conditions 
+  marketOutLook MarketOutLook
+  keyTrends    String[]
+
+  // Learning suggestions 
+  recommendedSkills String[]
+
+  lastUpdated DateTime @default(now())
+  nextUpdate  DateTime 
+
+  @@index([industry])
+}
+
+enum DemandLevel {
+  HIGH 
+  MEDIUM 
+  LOW
+}  
+
+enum MarketOutLook {
+  POSITIVE 
+  NEUTRAL 
+  NEGATIVE
 }
