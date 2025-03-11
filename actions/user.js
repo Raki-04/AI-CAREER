@@ -9,7 +9,8 @@ export async function updateUser(data) {
 
   const user = await db.user.findUnique({
     where: {
-      clerkUserId: userId },
+      clerkUserId: userId,
+     },
   });
 
   if (!user) throw new Error("user not found");
